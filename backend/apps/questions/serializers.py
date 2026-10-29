@@ -35,7 +35,7 @@ class AnswerSerializer(serializers.ModelSerializer):
             'id', 'question', 'author', 'body', 'is_accepted',
             'vote_score', 'user_vote', 'comments', 'created_at', 'updated_at',
         )
-        read_only_fields = ('id', 'author', 'is_accepted', 'vote_score', 'user_vote', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'question', 'author', 'is_accepted', 'vote_score', 'user_vote', 'created_at', 'updated_at')
 
     def validate_body(self, value):
         if len(value.strip()) < 30:
