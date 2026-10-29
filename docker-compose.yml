@@ -1,0 +1,29 @@
+# Docker Compose for local development services
+# Provides PostgreSQL only (Docker is optional — see docs/TROUBLESHOOTING.md for manual setup)
+#
+# Usage:
+#   docker-compose up -d postgres   # Start only the database
+#   docker-compose down             # Stop all services
+
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: devforum_postgres
+    environment:
+      POSTGRES_DB: devforum
+      POSTGRES_USER: devforum_user
+      POSTGRES_PASSWORD: devforum_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devforum_user -d devforum"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
