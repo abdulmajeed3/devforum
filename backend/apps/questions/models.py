@@ -120,3 +120,30 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author.username}'
+
+
+class Bookmark(models.Model):
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='bookmarks',
+    )
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name='bookmarks',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'questions_bookmark'
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['author', 'question'], name='unique_bookmark'),
+        ]
+        indexes = [
+            models.Index(fields=['author', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.author.username} → {self.question.title[:50]}'

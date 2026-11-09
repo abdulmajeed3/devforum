@@ -77,6 +77,7 @@ export interface QuestionSummary {
   answer_count: number
   has_accepted_answer: boolean
   view_count: number
+  is_bookmarked: boolean
   created_at: string
   updated_at: string
 }

@@ -14,6 +14,7 @@ import TagsPage from '@/pages/TagsPage'
 import TagQuestionsPage from '@/pages/TagQuestionsPage'
 import ProfilePage from '@/pages/ProfilePage'
 import EditProfilePage from '@/pages/EditProfilePage'
+import BookmarksPage from '@/pages/BookmarksPage'
 import NotificationsPage from '@/pages/NotificationsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/questions/:id/edit" element={<EditQuestionPage />} />
               <Route path="/profile/edit" element={<EditProfilePage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/bookmarks" element={<BookmarksPage />} />
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />

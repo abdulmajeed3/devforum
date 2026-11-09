@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Edit2, Trash2, MessageSquare } from 'lucide-react'
+import { Edit2, Trash2, MessageSquare, Bookmark } from 'lucide-react'
 import { useState } from 'react'
 import { questionsApi } from '@/lib/api-helpers'
 import { useAuth } from '@/contexts/AuthContext'
@@ -66,6 +66,15 @@ export default function QuestionDetailPage() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['question', questionId] })
     },
+  })
+
+  const toggleBookmark = useMutation({
+    mutationFn: () => questionsApi.toggleBookmark(questionId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['question', questionId] })
+      void queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
+    },
+    onError: (err) => setError(getErrorMessage(err)),
   })
 
   if (isLoading) return <LoadingSpinner />
@@ -138,6 +147,24 @@ export default function QuestionDetailPage() {
 
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500 flex-wrap gap-2">
               <div className="flex items-center gap-2">
+                {isAuthenticated && (
+                  <button
+                    onClick={() => toggleBookmark.mutate()}
+                    disabled={toggleBookmark.isPending}
+                    className={`flex items-center gap-1 transition-colors ${
+                      question.is_bookmarked
+                        ? 'text-blue-600 hover:text-blue-800'
+                        : 'hover:text-blue-600'
+                    }`}
+                    aria-label={question.is_bookmarked ? 'Remove bookmark' : 'Bookmark question'}
+                  >
+                    <Bookmark
+                      className="h-3.5 w-3.5"
+                      fill={question.is_bookmarked ? 'currentColor' : 'none'}
+                    />
+                    {question.is_bookmarked ? 'Bookmarked' : 'Bookmark'}
+                  </button>
+                )}
                 {isAuthor && (
                   <>
                     <Link

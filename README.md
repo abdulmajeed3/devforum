@@ -36,6 +36,7 @@ A full-stack developer community Q&A platform built with Django REST Framework a
 - **Notifications** — In-app notifications for answers, comments, and accepted answers
 - **Profiles** — Public profiles with real activity statistics and reputation
 - **Authentication** — JWT-based auth with automatic token refresh and secure logout
+- **Bookmarks** — Save questions for later; manage them from a personal bookmarks page accessible via the user menu
 - **Search & Filters** — Full-text search across title, body, and tags; filter by status, tag, and sort order
 - **Responsive Design** — Works at desktop, tablet, and mobile widths
 
@@ -332,7 +333,7 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test strategy.
 |-------|--------|-------|
 | Django system check | ✅ Passed | `0 issues identified` |
 | Ruff linting | ✅ Clean | Auto-fixed import sort; 0 remaining errors |
-| Backend tests | ⏳ Requires PostgreSQL | Tests written; not run — no local PostgreSQL in this environment |
+| Backend tests | ⏳ Requires PostgreSQL | Tests written; not run locally — requires devforum_user PostgreSQL role |
 | Frontend type-check | ✅ Passed | `tsc --noEmit` — no errors |
 | Frontend build | ✅ Passed | 3037 modules, 929 kB JS / 286 kB gzipped |
 | Frontend tests | ✅ 16/16 passed | 3 test files, all passing |
@@ -393,7 +394,7 @@ See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for solutions to common i
 - [ ] Password reset via email
 - [ ] Playwright end-to-end tests
 - [ ] WebSocket notifications
-- [ ] Question bookmarks
+- [x] Question bookmarks
 - [ ] User reputation badges
 - [ ] Moderation queue
 - [ ] Dark mode

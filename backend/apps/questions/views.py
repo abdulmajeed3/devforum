@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from apps.notifications.services import create_notification
 
 from .filters import QuestionFilter
-from .models import Answer, Comment, Question
+from .models import Answer, Bookmark, Comment, Question
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     AnswerSerializer,
@@ -196,3 +196,31 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
+
+
+class BookmarkToggleView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            question = Question.objects.get(pk=pk)
+        except Question.DoesNotExist:
+            return Response({'detail': 'Question not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        bookmark, created = Bookmark.objects.get_or_create(author=request.user, question=question)
+        if not created:
+            bookmark.delete()
+            return Response({'bookmarked': False})
+        return Response({'bookmarked': True}, status=status.HTTP_201_CREATED)
+
+
+class BookmarkedQuestionsView(generics.ListAPIView):
+    serializer_class = QuestionListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Question.objects.filter(
+            bookmarks__author=self.request.user
+        ).select_related('author').prefetch_related('tags').annotate(
+            answer_count=Count('answers')
+        ).order_by('-bookmarks__created_at')

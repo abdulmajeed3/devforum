@@ -5,7 +5,7 @@ from apps.accounts.serializers import AuthorSerializer
 from apps.tags.models import Tag
 from apps.tags.serializers import TagMinimalSerializer
 
-from .models import Answer, Comment, Question
+from .models import Answer, Bookmark, Comment, Question
 
 User = get_user_model()
 
@@ -55,17 +55,24 @@ class QuestionListSerializer(serializers.ModelSerializer):
     tags = TagMinimalSerializer(many=True, read_only=True)
     answer_count = serializers.IntegerField(read_only=True)
     has_accepted_answer = serializers.SerializerMethodField()
+    is_bookmarked = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
         fields = (
             'id', 'title', 'author', 'tags', 'status',
             'vote_score', 'answer_count', 'has_accepted_answer',
-            'view_count', 'created_at', 'updated_at',
+            'view_count', 'is_bookmarked', 'created_at', 'updated_at',
         )
 
     def get_has_accepted_answer(self, obj):
         return obj.answers.filter(is_accepted=True).exists()
+
+    def get_is_bookmarked(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return False
+        return Bookmark.objects.filter(author=request.user, question=obj).exists()
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
@@ -76,13 +83,14 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     answer_count = serializers.SerializerMethodField()
     user_vote = serializers.SerializerMethodField()
     has_accepted_answer = serializers.SerializerMethodField()
+    is_bookmarked = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
         fields = (
             'id', 'title', 'body', 'author', 'tags', 'status',
             'vote_score', 'user_vote', 'view_count',
-            'answer_count', 'has_accepted_answer',
+            'answer_count', 'has_accepted_answer', 'is_bookmarked',
             'answers', 'comments', 'created_at', 'updated_at',
         )
 
@@ -98,6 +106,12 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
     def get_has_accepted_answer(self, obj):
         return obj.answers.filter(is_accepted=True).exists()
+
+    def get_is_bookmarked(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return False
+        return obj.bookmarks.filter(author=request.user).exists()
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):

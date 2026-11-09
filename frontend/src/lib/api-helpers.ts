@@ -108,6 +108,16 @@ export const questionsApi = {
     apiClient
       .post<Comment>(`/questions/answers/${answerId}/comments/`, data)
       .then((r) => r.data),
+
+  toggleBookmark: (id: number) =>
+    apiClient
+      .post<{ bookmarked: boolean }>(`/questions/${id}/bookmark/`)
+      .then((r) => r.data),
+
+  listBookmarks: (params?: Record<string, unknown>) =>
+    apiClient
+      .get<Paginated<QuestionSummary>>('/questions/bookmarks/', { params })
+      .then((r) => r.data),
 }
 
 export const tagsApi = {

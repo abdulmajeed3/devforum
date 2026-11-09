@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Bell, Menu, X, Search, Code2, ChevronDown, LogOut, User, Settings } from 'lucide-react'
+import { Bell, Bookmark, Menu, X, Search, Code2, ChevronDown, LogOut, User, Settings } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/contexts/AuthContext'
 import { notificationsApi } from '@/lib/api-helpers'
@@ -136,6 +136,14 @@ export default function Navbar() {
                       >
                         <User className="h-4 w-4" />
                         Your Profile
+                      </Link>
+                      <Link
+                        to="/bookmarks"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      >
+                        <Bookmark className="h-4 w-4" />
+                        Bookmarks
                       </Link>
                       <Link
                         to="/profile/edit"
